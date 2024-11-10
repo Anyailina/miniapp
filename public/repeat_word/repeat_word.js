@@ -43,20 +43,6 @@ function endSwipe() {
   startX = 0;    // Сбрасываем начальное значение
 }
 
-function toggleMultiSelect() {
-  const multiSelect = document.getElementById('multi-select');
-  const doneButton = document.getElementById('done-button');
-  
-  if (multiSelect.style.display === 'none') {
-    multiSelect.style.display = 'block';
-    doneButton.style.display = 'block';
-  } else {
-    multiSelect.style.display = 'none';
-    doneButton.style.display = 'none';
-  }
-}
-
-
 
 
 swipeBlock.addEventListener('mousedown', (e) => startSwipe(e.clientX));
