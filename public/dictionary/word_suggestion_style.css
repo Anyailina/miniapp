@@ -1,0 +1,93 @@
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0; /* Light background for contrast */
+}
+
+/* Swipe container to center everything */
+.swipe-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Styling for swipe-block */
+.swipe-block {
+  width: 85%;
+  height: 85%;
+  background-color: #fafbfc; /* Light blue background */
+  color: black; /* Adjust text color */
+  display: flex;
+  flex-direction: column; /* Align items vertically */
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  cursor: grab;
+  transition: transform 0.5s ease-out, box-shadow 0.3s ease, background-color 0.3s ease, scale 0.2s ease;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  font-size: 18px;
+  padding: 20px;
+}
+
+#textField {
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  right: 20px;
+  font-size: 16px;
+  background: transparent;
+  border: none; /* Remove border */
+  border-radius: 4px;
+  height: 10%; /* Takes 90% of the container's width */
+  color: #333; /* Text color */
+  font-family: Arial, sans-serif; /* Ensures text looks clean */
+  text-align: center; /* Aligns the text to the left */
+}
+
+#submitButton {
+  padding: 10%; /* Adjust padding to create a square shape */
+  font-size: 16px;
+  background-color: #929492; /* Button background color */
+  color: #fafbfc; /* Button text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 70px; /* Set a fixed width for the square */
+  height: 70px; /* Set the same height for the square */
+  margin-bottom: 10px; /* Adds space between the button and the text field */
+  margin-top: -100px; 
+  display: flex; /* Enable flex to center the text */
+  justify-content: center; /* Center the text horizontally */
+  align-items: center; /* Center the text vertically */
+  text-align: center;
+  display: none; 
+}
+
+
+#textFieldTranslation{
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  margin-bottom: 10px; 
+  margin-top: -100px; 
+  font-size: 16px;
+  border: none; /* Remove border */
+  height: 10%; /* Takes 90% of the container's width */
+  color: #333; /* Text color */
+  font-family: Arial, sans-serif; /* Ensures text looks clean */
+  text-align: center; /* Aligns the text to the left */
+}
+
