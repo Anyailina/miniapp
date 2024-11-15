@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self';
+  object-src 'none';
+  font-src 'self';
+  frame-src 'none';
+  base-uri 'self';
+  form-action 'self';
+  connect-src 'self' http://localhost:8080;">
+  <title>Swipe Example</title>
+  <link rel="stylesheet" href="learn_new_word.css">
+</head>
+<body>
+
+  <div class="main-container">
+    <div class="back">
+      <button id="backButton" onclick="goBack()">Назад</button>
+    </div>
+    <!-- Блок с прогрессом изучения слов -->
+    <div id="learn-word" class="learn-word" style="display: none;">
+      <div class="progress-word">
+        <label for="textFieldQuantityWord">Выучено слов</label>
+        <input type="text" id="textFieldQuantityWord" value="0" readonly />
+      </div>
+
+      <div class="progress-label">
+        <progress id="progressBar" value="0" max="1"></progress>
+        <input type="text" id="progressPrecent" readonly />
+      </div>
+    </div>
+
+  
+    <!-- Блок с обучением слова -->
+    <div class="swipe-block"  style="display: none;">
+      <input type="text" id="textNewWordField"  readonly />
+      <input type="text" id="textFolderField"  readonly />
+      <input type="text" id="textField"  readonly />
+  
+      <button id="showButton">Показать перевод</button>
+  
+      <input type="text" id="textFieldTranslation" placeholder="Перевод слова" readonly />
+  
+      <div class="buttons-group">
+        <button id="know_word">Я уже знаю это слово</button>
+        <button id="not_know_word">Начать учить слово</button>
+      </div>
+    </div>
+  
+    <!-- Сообщение об успехе -->
+    <div id="textFieldGoodJob" class="good-job-message">
+      Отличная работа! <br> Вы выучили все новые слова.
+    </div>
+  </div>
+  <script src="learn_new_word.js"></script>
+</body>
+</html>

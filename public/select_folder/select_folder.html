@@ -15,16 +15,19 @@
     form-action 'self';
     connect-src 'self' http://localhost:8080;">
   <title>Swipe Example</title>
-  <link rel="stylesheet" href="select_folder.css"> <!-- Corrected the way CSS is linked -->
+  <link rel="stylesheet" href="select_folder.css">
 </head>
 <body>
 
   <div class="main-container">
-    <button id="toggleListButton">Выберите папку</button>
+    <div class="button-container">
+      <button id="toggleListButton">Выбрано папок (0)</button>
+      <button id="learnNewWordButton">Выучить новые слова</button>
+    </div>
     <button id="saveButton" class="hidden">Готово</button>
-      <ul id="dropdownList" class="hidden">
-      </ul>
+    <ul id="dropdownList" class="hidden"></ul>
   </div>
+
   <script src="select_folder.js"></script>
 </body>
 </html>
