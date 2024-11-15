@@ -88,34 +88,26 @@ function startSwipe(x) {
 function moveSwipe(x) {
   if (isSwiping) {
     moveX = x - startX;
+    
+    
   }
 }
 
 // Завершение свайпа
 function endSwipe() {
-  if (Math.abs(moveX) < threshold) return;
+  if (Math.abs(moveX) <threshold) return;
+  swipeBlock.style.transition = 'transform 0.5s ease'; 
+  const translation = (moveX > 20) ? window.innerWidth : -window.innerWidth;
+  swipeBlock.style.transform = `translateX(${translation}px)`;
 
   // Получаем финальное расстояние движения
-  const moveDistance = parseFloat(swipeBlock.style.transform.replace('translateX(', '').replace('px)', ''));
-  swipeBlock.style.transition = 'transform 0.5s ease'; // Возвращаем анимацию на место
-
-  // Если свайп не превысил порог, сбрасываем блок
-  if (Math.abs(moveDistance) <= threshold) {
-    swipeBlock.style.transform = `translateX(0px)`;
-    
-     // Возврат в исходное положение
+  if (neededLearnWord.length < totalNewWordCount) {
+    handleSwipeDecision(moveX);
+  } else if (learnedWord.length !== totalNewWordCount) {
+    handleRepeatWordLogic(moveX);
   } else {
-    console.log(moveDistance);
-    // Обрабатываем логику свайпа
-    if (neededLearnWord.length < totalNewWordCount) {
-      handleSwipeDecision(moveDistance);
-    } else if (learnedWord.length !== totalNewWordCount) {
-      handleRepeatWordLogic(moveDistance);
-    } else {
-      currentIndexNewWord = 0;
-    }
+    currentIndexNewWord = 0;
   }
-
   // Сброс состояния
   isSwiping = false;
   swipeBlock.style.cursor = 'grab';
@@ -169,9 +161,6 @@ function handleSwipeDecision(moveDistance) {
   }
 
   currentIndex++;  // Move to the next word
-  
-  const translation = (moveDistance > 20) ? window.innerWidth : -window.innerWidth;
-  swipeBlock.style.transform = `translateX(${translation}px)`;  // Move the block horizontally
 
   if (neededLearnWord.length !== totalNewWordCount) {
     if (currentIndex < words.length) {
@@ -198,12 +187,11 @@ function handleRepeatWordLogic(moveDistance) {
       updateProgress();
     }
   }
-  const translation = (moveDistance > 20) ? window.innerWidth : -window.innerWidth;
+  
   if (repeatWord.length !== 0) {
-    swipeBlock.style.transform = `translateX(${translation}px)`;
+   
     move(repeatWord[currentIndexNewWord].name, repeatWord[currentIndexNewWord].translation);
   } else {
-    swipeBlock.style.transform = `translateX(${translation}px)`;
     setTimeout(() => {
       showGoodJob();  // Show feedback when all words are learned
     }, 500);
