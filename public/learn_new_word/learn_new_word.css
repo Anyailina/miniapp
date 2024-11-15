@@ -27,62 +27,64 @@ body {
 }
 
 
-
-.progress-word {
-  height: 25px;
-  margin-left: 5%;
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-  width: 100%;
-}
-
-#textFieldQuantityWord {
+#textFieldQuantityWord{
+  margin-left: 5px;
   font-size: 16px;
-  background-color: transparent;
-  border: none;
-  width: 40px; /* Ширина для отображения числа */
-  padding: 10px;
+  align-items: end;
+  background: transparent;
+  border: transparent;
 }
+
 
 .learn-word {
-  margin-top: 20px; 
-  display: flex; /* Убедитесь, что display - flex */
-  justify-content: center; /* Размещает контент по центру горизонтально */
-  align-items: center; /* Размещает контент по центру вертикально */
-  flex-direction: column;
+  margin-top: 20px;
+  display: flex; /* Flex-контейнер для управления дочерними элементами */
+  flex-direction: column; /* Размещаем элементы по вертикали */
+  background-color: transparent;
   width: 100%;
-  padding: 15px; /* Дополнительные отступы */
+  height: 8%; /* Высота контейнера */
+}
+.progress-word {
+  width: 85%; /* Занимает всю ширину контейнера */
+  display: flex;
+  align-items: end;
+  height: 50%;
+  margin-bottom: 10px; /* Отступ снизу */
+  background-color: transparent;
+  margin: 0 auto;
+  
 }
 
+
 .progress-label {
-  width: 85%;
-  background-color: yellow;
+  background: transparent;
+  width: 85%; /* Ширина 85% */
+  height: 50%;
   display: flex;
-  justify-content: center; /* Центрирует прогресс-бар и текст */
   align-items: center;
+  flex-direction: row; /* Элементы располагаются в ряд */
+  margin: 0 auto; /* Центрирует по ширине */
 }
 
 #progressPrecent {
-  width: 15%;
+  width: 13%; /* Ширина для отображения процентов */
   font-size: 15px;
   border: none;
   background: transparent;
+  text-align: center;
+  margin-left: 2%; /* Фиксированный отступ между прогресс-баром и процентами */
 }
 
 progress {
-  width: 80%; /* Ширина прогресс-бара */
-  margin-left: 10px; /* Отступ между прогресс-баром и процентом */
+  width: 85%; /* Ширина прогресс-бара */
 }
+
 
 #progressPrecent:focus {
 
   border: none; /* Remove border on focus */
   outline: none; /* Optional: remove the focus outline */
 }
-
-
 
 /* Styling for swipe-block */
 .swipe-block {
@@ -101,7 +103,7 @@ progress {
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   font-size: 18px;
-  padding: 20px;
+
 }
 
 
@@ -187,7 +189,7 @@ progress {
   position: absolute;
   top: 17%;
   left: 10px;
-  right: 0px;
+  left: 4%;
   font-size: 16px;
   background: transparent;
   border: none; /* Remove border */
@@ -242,7 +244,7 @@ progress {
   bottom: 0px; /* Adjust the bottom space as needed */
   height: 50px; /* Adjust the height as needed */
   padding: 0 20px; /* Adjust padding for the button */
-  font-size: 16px;
+  font-size: 14px;
   background: transparent;
   border: none;
   border-radius: 10px;

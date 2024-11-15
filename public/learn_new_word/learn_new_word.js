@@ -12,6 +12,7 @@ const progressLabel = document.getElementById("progressPrecent");
 const progressContainer = document.getElementById("learn-word");
 const knowWord = document.getElementById("know_word");
 const notKnowWord = document.getElementById("not_know_word");
+const textFieldForQuantityWord = document.getElementById("textFieldForQuantityWord");
 
 // State Variables
 let words = [];
@@ -116,7 +117,7 @@ function endSwipe() {
               progressLabel.value = learnedWord.length/totalNewWordCount*100 +'%';
               textFieldQuantityWord.value = learnedWord.length;
               progressBar.value = learnedWord.length/totalNewWordCount;
-              
+             
           }
       } else {
           currentIndexNewWord = 0;
@@ -131,6 +132,10 @@ function endSwipe() {
         setTimeout(() => {
           showGoodJob();
         }, 1000);
+        progressBar.style.display = 'none';
+        progressLabel.style.display = 'none';
+        textFieldForQuantityWord.style.display = 'none';
+        textFieldQuantityWord.style.display = 'none';
         sendLearnedWord();
       } 
   }
@@ -201,11 +206,19 @@ function handleSwipeDecision(moveDistance) {
     
     }
     else{
+      setTimeout(() => {
+        textFieldTranslation.style.display = 'none';
+        showButton.style.display = 'block';
+        swipeBlock.style.transition = 'transform 0s';
+        swipeBlock.style.transform = 'translateX(0px)';
+        knowWord.textContent = 'Запомнил,отложить до повторения';
+        notKnowWord.textContent = 'Показывать,это слово еще';
+        textNewWordField.value = "Изучение нового слова";
+        textField.value = neededLearnWord[currentIndexNewWord].name
+        textFieldTranslation.value = neededLearnWord[currentIndexNewWord].translation
+      }, 1000);
+    
 
-      knowWord.textContent = 'Запомнил,отложить до повторения';
-      notKnowWord.textContent = 'Показывать,это слово еще';
-      textNewWordField.value = "Изучение нового слова";
-      move(neededLearnWord[currentIndexNewWord].name,neededLearnWord[currentIndexNewWord].translation);
     }
   
 }
@@ -253,7 +266,9 @@ async function fetchNewWords() {
     console.error('Error fetching new words:', error);
   }
 }
-
+function goBack() {
+  window.history.back();
+}
 
 
 
