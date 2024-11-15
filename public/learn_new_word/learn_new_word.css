@@ -258,16 +258,13 @@ progress {
   left: 50%; /* Position the button at 25% of the width from the right */
 }
 
-#know_word:hover,
-#know_word:active {
+#know_word:hover {
     background-color: rgb(30, 152, 14); /* Change background to red when hovered or clicked */
   
 }
 
-#not_know_word:hover,
-#not_know_word:active {
+#not_know_word:hover{
     background-color: rgb(227, 47, 47); /* Change background to red when hovered or clicked */
-   
 }
 
 #know_word, #not_know_word {

@@ -25,6 +25,8 @@ let totalNewWordCount = 0;
 let startX = 0;
 let isSwiping = false;
 let currentX = 0;
+let moveX = 0;
+const threshold = 20; // Минимальное расстояние для срабатывания свайпа
 
 // Fetch Words from Server
 async function fetchWords() {
@@ -56,7 +58,7 @@ async function fetchWords() {
 
     // Initialize progress bar
     progressBar.value = 0;
-    progressLabel.value = '100%';
+    progressLabel.value = '0%';
     }
     else{
       textFieldGoodJob.style.display ='block';
@@ -74,80 +76,53 @@ function updateWordUI(word) {
   textFolderField.value = word.folderDto.name;
 }
 
-// Swipe Start
+// Начало свайпа
 function startSwipe(x) {
   startX = x;
   isSwiping = true;
   swipeBlock.style.cursor = 'grabbing';
-  swipeBlock.style.transition = 'none';
+  swipeBlock.style.transition = 'none'; // Убираем анимацию при перетаскивании
 }
 
-// Move Swipe Block
+// Движение свайпа
 function moveSwipe(x) {
   if (isSwiping) {
-    const moveX = x - startX;
-    swipeBlock.style.transform = `translateX(${currentX + moveX}px)`;
+    moveX = x - startX;
   }
 }
 
-// End Swipe Action
+// Завершение свайпа
 function endSwipe() {
-  const moveDistance = currentX + parseFloat(swipeBlock.style.transform.replace('translateX(', '').replace('px)', ''));
-  if (Math.abs(moveDistance) > 20) {
-    isSwiping = false;
-    swipeBlock.style.cursor = 'grab';
-    if (neededLearnWord.length < totalNewWordCount) {
-      swipeBlock.style.transition = 'transform 1s ease';
-      handleSwipeDecision(moveDistance);
-  } else if (learnedWord.length != totalNewWordCount) {
-      swipeBlock.style.transition = 'transform 1s ease';
+  if (Math.abs(moveX) < threshold) return;
 
-      if (repeatWord.length > currentIndexNewWord) {
-          if (moveDistance > 20) {
-              let word = repeatWord[currentIndexNewWord];
-              repeatWord = repeatWord.filter(item => item !== word);
-              repeatWord.push(word);
-             
-          } else {
-             repeatWord[currentIndexNewWord].quantityRepeat = 1;
-              console.log(repeatWord[currentIndexNewWord]);
-              let word = repeatWord[currentIndexNewWord];
-              learnedWord.push(word);
-              repeatWord = repeatWord.filter(item => item !== word);
-              progressLabel.value = learnedWord.length/totalNewWordCount*100 +'%';
-              textFieldQuantityWord.value = learnedWord.length;
-              progressBar.value = learnedWord.length/totalNewWordCount;
-             
-          }
-      } else {
-          currentIndexNewWord = 0;
-      }
-      if(repeatWord.length != 0){
-        const translation = (moveDistance > 20) ? window.innerWidth : -window.innerWidth;
-        swipeBlock.style.transform = `translateX(${translation}px)`;
-        move(repeatWord[currentIndexNewWord].name, repeatWord[currentIndexNewWord].translation);
-      }else {
-        const translation = (moveDistance > 20) ? window.innerWidth : -window.innerWidth;
-        swipeBlock.style.transform = `translateX(${translation}px)`;
-        setTimeout(() => {
-          showGoodJob();
-        }, 1000);
-        progressBar.style.display = 'none';
-        progressLabel.style.display = 'none';
-        textFieldForQuantityWord.style.display = 'none';
-        textFieldQuantityWord.style.display = 'none';
-        sendLearnedWord();
-      } 
+  // Получаем финальное расстояние движения
+  const moveDistance = parseFloat(swipeBlock.style.transform.replace('translateX(', '').replace('px)', ''));
+  swipeBlock.style.transition = 'transform 0.5s ease'; // Возвращаем анимацию на место
+
+  // Если свайп не превысил порог, сбрасываем блок
+  if (Math.abs(moveDistance) <= threshold) {
+    swipeBlock.style.transform = `translateX(0px)`;
+    
+     // Возврат в исходное положение
+  } else {
+    console.log(moveDistance);
+    // Обрабатываем логику свайпа
+    if (neededLearnWord.length < totalNewWordCount) {
+      handleSwipeDecision(moveDistance);
+    } else if (learnedWord.length !== totalNewWordCount) {
+      handleRepeatWordLogic(moveDistance);
+    } else {
+      currentIndexNewWord = 0;
+    }
   }
-  // Сброс позиции свайпа
+
+  // Сброс состояния
+  isSwiping = false;
+  swipeBlock.style.cursor = 'grab';
   currentX = 0;
   startX = 0;
-  
-  }
-  else {
-    swipeBlock.style.transform = `translateX(0px)`;
-  }
 }
+
 
 function showGoodJob(){
   swipeBlock.style.display = 'none';
@@ -177,50 +152,90 @@ function move(word,translation) {
     swipeBlock.style.transform = 'translateX(0px)';
     textField.value = word
     textFieldTranslation.value = translation
-  }, 1000);
+    knowWord.style.backgroundColor = "#fafbfc";
+    notKnowWord.style.backgroundColor = "#fafbfc";
+  }, 500);
 }
 
 
 // Handle swipe decision (learned or not learned)
 function handleSwipeDecision(moveDistance) {
-    if (moveDistance < -20) {
-      words[currentIndex].isLearned = true;
-    }
-    else{
-      words[currentIndex].quantityRepeat = 1; 
-      neededLearnWord.push(words[currentIndex]);
-      repeatWord.push(words[currentIndex]);
-    }
-    currentIndex++;
+  if (moveDistance < -20) {
+    words[currentIndex].isLearned = true;  // Mark word as learned if swiped enough
+  } else {
+    words[currentIndex].quantityRepeat = 1; 
+    neededLearnWord.push(words[currentIndex]);  // Add to needed learn list
+    repeatWord.push(words[currentIndex]);  // Add to repeat list
+  }
 
-    const translation = (moveDistance > 20) ? window.innerWidth : -window.innerWidth;
-    swipeBlock.style.transform = `translateX(${translation}px)`;
-
-    if(neededLearnWord.length != totalNewWordCount ){
-      if( currentIndex < words.length){
-        move(words[currentIndex].name,words[currentIndex].translation);
-      }
-      else{
-        fetchNewWords();
-      }
-    
-    }
-    else{
-      setTimeout(() => {
-        textFieldTranslation.style.display = 'none';
-        showButton.style.display = 'block';
-        swipeBlock.style.transition = 'transform 0s';
-        swipeBlock.style.transform = 'translateX(0px)';
-        knowWord.textContent = 'Запомнил,отложить до повторения';
-        notKnowWord.textContent = 'Показывать,это слово еще';
-        textNewWordField.value = "Изучение нового слова";
-        textField.value = neededLearnWord[currentIndexNewWord].name
-        textFieldTranslation.value = neededLearnWord[currentIndexNewWord].translation
-      }, 1000);
-    
-
-    }
+  currentIndex++;  // Move to the next word
   
+  const translation = (moveDistance > 20) ? window.innerWidth : -window.innerWidth;
+  swipeBlock.style.transform = `translateX(${translation}px)`;  // Move the block horizontally
+
+  if (neededLearnWord.length !== totalNewWordCount) {
+    if (currentIndex < words.length) {
+      move(words[currentIndex].name, words[currentIndex].translation);  // Move to next word
+    } else {
+      fetchNewWords();  // Fetch new words if all words are processed
+    }
+  } else {
+    showEndOfLearnStage();
+  }
+}
+
+function handleRepeatWordLogic(moveDistance) {
+  if (repeatWord.length > currentIndexNewWord) {
+    if (moveDistance > 20) {
+      let word = repeatWord[currentIndexNewWord];
+      repeatWord = repeatWord.filter(item => item !== word);
+      repeatWord.push(word);
+    } else {
+      repeatWord[currentIndexNewWord].quantityRepeat = 1;
+      let word = repeatWord[currentIndexNewWord];
+      learnedWord.push(word);
+      repeatWord = repeatWord.filter(item => item !== word);
+      updateProgress();
+    }
+  }
+  const translation = (moveDistance > 20) ? window.innerWidth : -window.innerWidth;
+  if (repeatWord.length !== 0) {
+    swipeBlock.style.transform = `translateX(${translation}px)`;
+    move(repeatWord[currentIndexNewWord].name, repeatWord[currentIndexNewWord].translation);
+  } else {
+    swipeBlock.style.transform = `translateX(${translation}px)`;
+    setTimeout(() => {
+      showGoodJob();  // Show feedback when all words are learned
+    }, 500);
+    hideProgressElements();
+    sendLearnedWord();  // Send data of learned words
+  }
+}
+function showEndOfLearnStage() {
+  setTimeout(() => {
+    textFieldTranslation.style.display = 'none';
+    showButton.style.display = 'block';
+    swipeBlock.style.transition = 'transform 0s';
+    swipeBlock.style.transform = 'translateX(0px)';
+    knowWord.textContent = 'Запомнил,отложить до повторения';
+    notKnowWord.textContent = 'Показывать,это слово еще';
+    textNewWordField.value = "Изучение нового слова";
+    knowWord.style.backgroundColor = "#fafbfc";
+    notKnowWord.style.backgroundColor = "#fafbfc";
+    textField.value = neededLearnWord[currentIndexNewWord].name;
+    textFieldTranslation.value = neededLearnWord[currentIndexNewWord].translation;
+  }, 500);
+}
+function updateProgress() {
+  progressLabel.value = (learnedWord.length / totalNewWordCount) * 100 + '%';
+  textFieldQuantityWord.value = learnedWord.length;
+  progressBar.value = learnedWord.length / totalNewWordCount;
+}
+function hideProgressElements() {
+  progressBar.style.display = 'none';
+  progressLabel.style.display = 'none';
+  textFieldForQuantityWord.style.display = 'none';
+  textFieldQuantityWord.style.display = 'none';
 }
 
 // Fetch new words and update UI
@@ -250,7 +265,7 @@ async function fetchNewWords() {
       else{
         setTimeout(() => {
           showGoodJob();
-        }, 1000);
+        }, 500);
         sendLearnedWord();
       }
     }
@@ -289,5 +304,29 @@ showButton.addEventListener('click', () => {
   showButton.style.display = 'none';
 });
 
-// Initialize the process
+knowWord.addEventListener('click', () => {
+  swipeBlock.style.transition = 'transform 0.5s ease';
+  knowWord.style.backgroundColor = "rgb(30, 152, 14)";
+  if (neededLearnWord.length < totalNewWordCount) {
+    handleSwipeDecision(-threshold -1);
+  } else if (learnedWord.length !== totalNewWordCount) {
+    handleRepeatWordLogic(-threshold-1);
+  } else {
+    currentIndexNewWord = 0;
+  }
+});
+
+
+notKnowWord.addEventListener('click', () => {
+  notKnowWord.style.backgroundColor ="rgb(227, 47, 47)";
+  swipeBlock.style.transition = 'transform 0.5s ease';
+  if (neededLearnWord.length < totalNewWordCount) {
+    handleSwipeDecision(threshold+1);
+  } else if (learnedWord.length !== totalNewWordCount) {
+    handleRepeatWordLogic(threshold+1);
+  } else {
+    currentIndexNewWord = 0;
+  }
+});
+
 fetchWords();
