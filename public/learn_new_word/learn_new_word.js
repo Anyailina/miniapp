@@ -26,13 +26,16 @@ let startX = 0;
 let isSwiping = false;
 let currentX = 0;
 let moveX = 0;
+let id = 0;
 const threshold = 20; // Минимальное расстояние для срабатывания свайпа
 
 // Fetch Words from Server
 async function fetchWords() {
   const selectedFolders = localStorage.getItem('selected_folders');
+  const params = new URLSearchParams(window.location.search);
+  id = params.get('id');
   try {
-    const response = await fetch("http://localhost:8080/word/user?id=8", {
+    const response = await fetch(`https://previously-true-fly.ngrok-free.app/word/user?id=${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,11 +73,7 @@ async function fetchWords() {
 }
 
 // Update UI with word details
-function updateWordUI(word) {
-  textField.value = word.name;
-  textFieldTranslation.value = word.translation;
-  textFolderField.value = word.folderDto.name;
-}
+
 
 // Начало свайпа
 function startSwipe(x) {
@@ -88,8 +87,6 @@ function startSwipe(x) {
 function moveSwipe(x) {
   if (isSwiping) {
     moveX = x - startX;
-    
-    
   }
 }
 
@@ -97,10 +94,19 @@ function moveSwipe(x) {
 function endSwipe() {
   if (Math.abs(moveX) <threshold) return;
   swipeBlock.style.transition = 'transform 0.5s ease'; 
-  const translation = (moveX > 20) ? window.innerWidth : -window.innerWidth;
+  const translation = (moveX > threshold) ? window.innerWidth : -window.innerWidth;
   swipeBlock.style.transform = `translateX(${translation}px)`;
 
   // Получаем финальное расстояние движения
+  handleMove(moveX)
+  // Сброс состояния
+  isSwiping = false;
+  swipeBlock.style.cursor = 'grab';
+  currentX = 0;
+  startX = 0;
+}
+
+function handleMove(moveX){
   if (neededLearnWord.length < totalNewWordCount) {
     handleSwipeDecision(moveX);
   } else if (learnedWord.length !== totalNewWordCount) {
@@ -108,11 +114,6 @@ function endSwipe() {
   } else {
     currentIndexNewWord = 0;
   }
-  // Сброс состояния
-  isSwiping = false;
-  swipeBlock.style.cursor = 'grab';
-  currentX = 0;
-  startX = 0;
 }
 
 
@@ -124,7 +125,7 @@ function showGoodJob(){
 
 async function sendLearnedWord(){
   try{
-    await fetch("http://localhost:8080/word/user", {
+    await fetch("https://previously-true-fly.ngrok-free.app/word", {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(learnedWord)
@@ -135,15 +136,20 @@ async function sendLearnedWord(){
   }
 }
 
+function updateWordUI(word) {
+  textField.value = word.name;
+  textFieldTranslation.value = word.translation;
+  textFolderField.value = word.folderDto.name;
+}
+
 // Move to next word in the list
-function move(word,translation) {
+function move(word) {
   setTimeout(() => {
     textFieldTranslation.style.display = 'none';
     showButton.style.display = 'block';
     swipeBlock.style.transition = 'transform 0s';
     swipeBlock.style.transform = 'translateX(0px)';
-    textField.value = word
-    textFieldTranslation.value = translation
+    updateWordUI(word);
     knowWord.style.backgroundColor = "#fafbfc";
     notKnowWord.style.backgroundColor = "#fafbfc";
   }, 500);
@@ -152,7 +158,7 @@ function move(word,translation) {
 
 // Handle swipe decision (learned or not learned)
 function handleSwipeDecision(moveDistance) {
-  if (moveDistance < -20) {
+  if (moveDistance < -threshold) {
     words[currentIndex].isLearned = true;  // Mark word as learned if swiped enough
   } else {
     words[currentIndex].quantityRepeat = 1; 
@@ -164,7 +170,7 @@ function handleSwipeDecision(moveDistance) {
 
   if (neededLearnWord.length !== totalNewWordCount) {
     if (currentIndex < words.length) {
-      move(words[currentIndex].name, words[currentIndex].translation);  // Move to next word
+      move(words[currentIndex]);  // Move to next word
     } else {
       fetchNewWords();  // Fetch new words if all words are processed
     }
@@ -175,7 +181,7 @@ function handleSwipeDecision(moveDistance) {
 
 function handleRepeatWordLogic(moveDistance) {
   if (repeatWord.length > currentIndexNewWord) {
-    if (moveDistance > 20) {
+    if (moveDistance > threshold) {
       let word = repeatWord[currentIndexNewWord];
       repeatWord = repeatWord.filter(item => item !== word);
       repeatWord.push(word);
@@ -190,7 +196,7 @@ function handleRepeatWordLogic(moveDistance) {
   
   if (repeatWord.length !== 0) {
    
-    move(repeatWord[currentIndexNewWord].name, repeatWord[currentIndexNewWord].translation);
+    move(repeatWord[currentIndexNewWord]);
   } else {
     setTimeout(() => {
       showGoodJob();  // Show feedback when all words are learned
@@ -230,13 +236,13 @@ function hideProgressElements() {
 async function fetchNewWords() {
 
   try {
-    await fetch("http://localhost:8080/word/user", {
+    await fetch("https://previously-true-fly.ngrok-free.app/word", {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(words)
     });
 
-    const postResponse = await fetch("http://localhost:8080/word/user?id=8", {
+    const postResponse = await fetch(`https://previously-true-fly.ngrok-free.app/word/user?id=${id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: localStorage.getItem('selected_folders')
@@ -248,7 +254,7 @@ async function fetchNewWords() {
     if(words.length < 1){
       totalNewWordCount =  neededLearnWord.length;
       if(neededLearnWord.length > 0){
-        move(neededLearnWord[0].name,neededLearnWord[0].translation);
+        move(neededLearnWord[0]);
       }
       else{
         setTimeout(() => {
@@ -259,10 +265,10 @@ async function fetchNewWords() {
     }
     else if(words.length < totalNewWordCount - neededLearnWord.length){
       totalNewWordCount = neededLearnWord.length + words.length;
-      move(words[0].name,words[0].translation);
+      move(words[0]);
     }
     else{
-      move(words[0].name,words[0].translation);
+      move(words[0]);
     }
     currentIndex = 0;
   } catch (error) {
@@ -280,6 +286,15 @@ swipeBlock.addEventListener('mousedown', (e) => startSwipe(e.clientX));
 window.addEventListener('mousemove', (e) => moveSwipe(e.clientX));
 window.addEventListener('mouseup', endSwipe);
 
+
+
+window.addEventListener("beforeunload", function (event) {
+  const url = "https://previously-true-fly.ngrok-free.app/word";
+  const data = JSON.stringify(learnedWord);
+
+  navigator.sendBeacon(url, data);
+});
+
 swipeBlock.addEventListener('touchstart', (e) => startSwipe(e.touches[0].clientX), { passive: false });
 window.addEventListener('touchmove', (e) => {
   moveSwipe(e.touches[0].clientX);
@@ -295,26 +310,18 @@ showButton.addEventListener('click', () => {
 knowWord.addEventListener('click', () => {
   swipeBlock.style.transition = 'transform 0.5s ease';
   knowWord.style.backgroundColor = "rgb(30, 152, 14)";
-  if (neededLearnWord.length < totalNewWordCount) {
-    handleSwipeDecision(-threshold -1);
-  } else if (learnedWord.length !== totalNewWordCount) {
-    handleRepeatWordLogic(-threshold-1);
-  } else {
-    currentIndexNewWord = 0;
-  }
+  
+  swipeBlock.style.transform = `translateX(${-window.innerWidth}px)`;
+  handleMove(-threshold -1);
 });
 
 
 notKnowWord.addEventListener('click', () => {
   notKnowWord.style.backgroundColor ="rgb(227, 47, 47)";
   swipeBlock.style.transition = 'transform 0.5s ease';
-  if (neededLearnWord.length < totalNewWordCount) {
-    handleSwipeDecision(threshold+1);
-  } else if (learnedWord.length !== totalNewWordCount) {
-    handleRepeatWordLogic(threshold+1);
-  } else {
-    currentIndexNewWord = 0;
-  }
+  swipeBlock.style.transform = `translateX(${window.innerWidth}px)`;
+
+  handleMove(threshold+1);
 });
 
 fetchWords();

@@ -95,11 +95,11 @@ progress {
   display: none;
   flex-direction: column; /* Align items vertically */
   justify-content: center;
+  position: relative;
   align-items: center;
   border-radius: 10px;
   cursor: grab;
   transition: transform 0.5s ease-out, box-shadow 0.3s ease, background-color 0.3s ease, scale 0.2s ease;
-  position: relative;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   font-size: 18px;

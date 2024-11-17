@@ -5,34 +5,94 @@
   box-sizing: border-box;
 }
 
+
 /* Body styling */
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0; /* Light background for contrast */
 }
 
+.back{
+  justify-content: left;
+  height: 4%;
+}
 /* Swipe container to center everything */
-.swipe-container {
+.main-container{
   width: 100%;
   height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
   overflow: hidden;
-  position: relative;
   flex-direction: column; /* Align items vertically */
-  justify-content: center;
 }
 
 
+#textFieldQuantityWord{
+  margin-left: 5px;
+  font-size: 16px;
+  align-items: end;
+  background: transparent;
+  border: transparent;
+}
+
+
+.learn-word {
+  margin-top: 20px;
+  display: flex; /* Flex-контейнер для управления дочерними элементами */
+  flex-direction: column; /* Размещаем элементы по вертикали */
+  background-color: transparent;
+  width: 100%;
+  height: 8%; /* Высота контейнера */
+}
+.progress-word {
+  width: 85%; /* Занимает всю ширину контейнера */
+  display: flex;
+  align-items: end;
+  height: 50%;
+  margin-bottom: 10px; /* Отступ снизу */
+  background-color: transparent;
+  margin: 0 auto;
+  
+}
+
+
+.progress-label {
+  background: transparent;
+  width: 85%; /* Ширина 85% */
+  height: 50%;
+  display: flex;
+  align-items: center;
+  flex-direction: row; /* Элементы располагаются в ряд */
+  margin: 0 auto; /* Центрирует по ширине */
+}
+
+#progressPrecent {
+  width: 13%; /* Ширина для отображения процентов */
+  font-size: 15px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  margin-left: 2%; /* Фиксированный отступ между прогресс-баром и процентами */
+}
+
+progress {
+  width: 85%; /* Ширина прогресс-бара */
+}
+
+
+#progressPrecent:focus {
+
+  border: none; /* Remove border on focus */
+  outline: none; /* Optional: remove the focus outline */
+}
 
 /* Styling for swipe-block */
 .swipe-block {
   width: 85%;
-  height: 85%;
+  height: 80%;
   background-color: #fafbfc; /* Light blue background */
   color: black; /* Adjust text color */
-  display: flex;
+  display: none;
   flex-direction: column; /* Align items vertically */
   justify-content: center;
   align-items: center;
@@ -43,26 +103,54 @@ body {
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   font-size: 18px;
-  padding: 20px;
+
 }
 
-#textField {
+
+
+#backButton {
+  position: absolute; /* Позволяет точно расположить кнопку */
+  top: 10px; /* Отступ сверху */
+  left: 10px; /* Отступ слева */
+  padding: 8px 16px; /* Внутренний отступ для увеличения размера кнопки */
+  font-size: 16px; /* Размер шрифта */
+  background-color: #007bff; /* Цвет фона кнопки */
+  color: white; /* Цвет текста */
+  border: none; /* Убирает границу */
+  border-radius: 4px; /* Скругляет углы */
+  cursor: pointer; /* Меняет курсор при наведении */
+}
+
+#textNewWordField{
   position: absolute;
-  top: 40px;
-  left: 20px;
-  right: 20px;
-  font-size: 16px;
-  background: transparent;
+  display: flex;
+  top: 4%;
+  width: 100%;
+  left: 4%;
   border: none; /* Remove border */
-  border-radius: 4px;
+  background: transparent;
+}
+#textFieldTranslation{
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  font-size: 16px;
+  border: none; /* Remove border */
   height: 10%; /* Takes 90% of the container's width */
   color: #333; /* Text color */
   font-family: Arial, sans-serif; /* Ensures text looks clean */
   text-align: center; /* Aligns the text to the left */
+  display: none; 
 }
 
-#submitButton {
-  padding: 10%; /* Adjust padding to create a square shape */
+#showButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-size: 16px;
   background-color: #929492; /* Button background color */
   color: #fafbfc; /* Button text color */
@@ -71,27 +159,114 @@ body {
   cursor: pointer;
   width: 70px; /* Set a fixed width for the square */
   height: 70px; /* Set the same height for the square */
-  margin-bottom: 10px; /* Adds space between the button and the text field */
-  margin-top: -100px; 
   display: flex; /* Enable flex to center the text */
   justify-content: center; /* Center the text horizontally */
   align-items: center; /* Center the text vertically */
   text-align: center;
-  
+}
+#textFolderField{
+  position: absolute;
+  color: #857b7b;
+  top: 12%;
+  width: 100%;
+  left: 4%;
+  border: none; /* Remove border */
+  background: transparent;
+}
+
+#textNewWordField:focus {
+
+  border: none; /* Remove border on focus */
+  outline: none; /* Optional: remove the focus outline */
+}
+
+#textFolderField:focus {
+  border: none; /* Remove border on focus */
+  outline: none; /* Optional: remove the focus outline */
+}
+#textField {
+  display: flex; 
+  position: absolute;
+  top: 17%;
+  left: 10px;
+  left: 4%;
+  font-size: 16px;
+  background: transparent;
+  border: none; /* Remove border */
+  border-radius: 4px;
+  height: 10%; /* Takes 90% of the container's width */
+  color: #333; /* Text color */
+  padding: 10px;
+  font-family: Arial, sans-serif; /* Ensures text looks clean */
+
+}
+#textField:focus {
+  border: none; /* Remove border on focus */
+  outline: none; /* Optional: remove the focus outline */
+}
+
+#textFieldTranslation:focus {
+  border: none; /* Remove border on focus */
+  outline: none; /* Optional: remove the focus outline */
 }
 
 
-#textFieldTranslation{
+
+
+
+
+#textFieldGoodJob {
   position: absolute;
-  left: 20px;
-  right: 20px;
-  margin-bottom: 10px; 
-  margin-top: -100px; 
+  top: 50%; /* Центрируем по вертикали */
+  left: 50%; /* Центрируем по горизонтали */
+  transform: translate(-50%, -100%); /* Сдвигаем на 50% ширины и высоты для точного центрирования */
+
   font-size: 16px;
-  border: none; /* Remove border */
-  height: 10%; /* Takes 90% of the container's width */
-  color: #333; /* Text color */
-  font-family: Arial, sans-serif; /* Ensures text looks clean */
-  text-align: center; /* Aligns the text to the left */
-  display: none; 
+  border: none; /* Убирает границу */
+  height: auto; /* Высота будет подстраиваться по содержимому */
+  color: #333; /* Цвет текста */
+  font-family: Arial, sans-serif; /* Шрифт */
+  display: block; /* Делает элемент блочным, чтобы текст мог быть центрирован */
+  text-align: center; /* Центрирует текст внутри элемента */
+  
+  /* Разрешаем перенос слов */
+  word-wrap: break-word; /* Для старых браузеров */
+  overflow-wrap: break-word; /* Для новых браузеров */
+  white-space: normal; /* Позволяет переносить текст на несколько строк */
+  display: none;
+}
+
+
+
+#know_word, #not_know_word {
+  position: absolute;
+  width: 50%;
+  bottom: 0px; /* Adjust the bottom space as needed */
+  height: 50px; /* Adjust the height as needed */
+  padding: 0 20px; /* Adjust padding for the button */
+  font-size: 14px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+}
+
+#know_word {
+  right: 50%; /* Position the button at 25% of the width */
+}
+
+#not_know_word {
+  left: 50%; /* Position the button at 25% of the width from the right */
+}
+
+#know_word:hover {
+    background-color: rgb(30, 152, 14); /* Change background to red when hovered or clicked */
+  
+}
+
+#not_know_word:hover{
+    background-color: rgb(227, 47, 47); /* Change background to red when hovered or clicked */
+}
+
+#know_word, #not_know_word {
+  background-color: #fafbfc
 }
