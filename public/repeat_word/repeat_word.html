@@ -3,17 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' 'unsafe-inline';
-  img-src 'self';
-  object-src 'none';
-  font-src 'self' 'unsafe-inline' https://fonts.gstatic.com; 
-  style-src 'self''unsafe-inline' ;
-  frame-src 'none';
-  base-uri 'self';
-  form-action 'self';
-  connect-src 'self' https://previously-true-fly.ngrok-free.app;">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <title>Swipe Example</title>
   <link rel="stylesheet" href="repeat_word.css">
 </head>
@@ -39,13 +29,22 @@
   
     <!-- Блок с обучением слова -->
     <div class="swipe-block"  style="display: none;">
-      <input type="text" id="textNewWordField"  readonly />
-      <input type="text" id="textFolderField"  readonly />
-      <input type="text" id="textField"  readonly />
+      <div class="text-block">
+        <input type="text" id="textNewWordField"  readonly />
+        <input type="text" id="textFolderField"  readonly />
+        <input type="text" id="textField"  readonly />  
+        <div class="translation">
+          <input id="textFieldTranslation" type="text"  placeholder="Enter text here" />
+          <button id="showButton">Перевод
+          </button>
+        </div>
+      </div>
   
-      <button id="showButton">Показать перевод</button>
-  
-      <input type="text" id="textFieldTranslation" placeholder="Перевод слова" readonly />
+     
+      <div class="image-block">
+        <img id="image">
+      </div>
+     
   
       <div class="buttons-group">
         <button id="know_word">Я вспомнил это слово</button>

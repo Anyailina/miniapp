@@ -66,6 +66,7 @@ async function fetchWords() {
     else{
       textFieldGoodJob.style.display ='block';
     }
+    displayImageFromBytes();
     
   } catch (error) {
     console.error('Error fetching words:', error);
@@ -102,6 +103,7 @@ function endSwipe() {
   // Сброс состояния
   isSwiping = false;
   swipeBlock.style.cursor = 'grab';
+  moveX = 0;
   currentX = 0;
   startX = 0;
 }
@@ -232,16 +234,17 @@ function hideProgressElements() {
   textFieldQuantityWord.style.display = 'none';
 }
 
+
 // Fetch new words and update UI
 async function fetchNewWords() {
-
+  
   try {
     await fetch("https://previously-true-fly.ngrok-free.app/word", {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(words)
     });
-
+    
     const postResponse = await fetch(`https://previously-true-fly.ngrok-free.app/word/user?id=${id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -250,6 +253,7 @@ async function fetchNewWords() {
 
     const postResult = await postResponse.json();
     words = postResult;
+   
   
     if(words.length < 1){
       totalNewWordCount =  neededLearnWord.length;
@@ -271,9 +275,13 @@ async function fetchNewWords() {
       move(words[0]);
     }
     currentIndex = 0;
+
+    
+    displayImageFromBytes();
   } catch (error) {
     console.error('Error fetching new words:', error);
   }
+  
 }
 function goBack() {
   window.history.back();
@@ -325,3 +333,53 @@ notKnowWord.addEventListener('click', () => {
 });
 
 fetchWords();
+
+async function displayImageFromBytes() {
+  console.log(1);
+  try {
+    // Отправляем запрос на сервер
+    const response = await fetch("http://localhost:8082/ai/request/image");
+
+    if (!response.ok) {
+      throw new Error(`Ошибка загрузки изображения: ${response.statusText}`);
+    }
+
+    // Получаем массив байтов как Blob
+    const blob = await response.blob();
+
+    // Генерируем URL из Blob
+    const objectUrl = URL.createObjectURL(blob);
+    
+    image.src = objectUrl;
+    const parentElement = image.parentElement; 
+    const parentWidth = parentElement.offsetWidth; // Ширина контейнера
+    const parentHeight = parentElement.offsetHeight; // Высота контейнера
+
+    image.src = objectUrl;
+
+    image.onload = () => {
+      const aspectRatio = image.naturalWidth / image.naturalHeight;
+      let newWidth, newHeight;
+
+      // Сохраняем пропорции, подстраиваем под размеры контейнера
+      if (parentWidth / aspectRatio <= parentHeight) {
+        newWidth = parentWidth;
+        newHeight = parentWidth / aspectRatio;
+      } else {
+        newHeight = parentHeight;
+        newWidth = parentHeight * aspectRatio;
+      }
+
+      image.style.width = `${newWidth}px`;
+      image.style.height = `${newHeight}px`;
+      parentElement.style.display = 'flex';
+      parentElement.style.justifyContent = 'center';
+      parentElement.style.alignItems = 'center';
+      parentElement.style.position = 'relative'; 
+    }
+  
+  } catch (error) {
+    console.error("Ошибка:", error.message);
+  }
+}
+

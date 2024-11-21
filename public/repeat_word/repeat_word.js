@@ -13,6 +13,7 @@ const progressContainer = document.getElementById("learn-word");
 const knowWord = document.getElementById("know_word");
 const notKnowWord = document.getElementById("not_know_word");
 const textFieldForQuantityWord = document.getElementById("textFieldForQuantityWord");
+const image = document.getElementById("image");
 
 // State Variables
 let words = [];
@@ -42,21 +43,21 @@ async function fetchWords() {
     const postResult = await response.json();
     if(postResult.length > 0){
       totalNewWordCount = postResult.length;
-    words = postResult;
-    currentIndex = 0;
-    swipeBlock.style.display ='block';
-    progressContainer.style.display = 'block';
+      words = postResult;
+      currentIndex = 0;
+      swipeBlock.style.display ='block';
+      progressContainer.style.display = 'block';
 
-    // Update UI with first word
-    updateWordUI(postResult[0]);
+      // Update UI with first word
+      updateWordUI(postResult[0]);
 
-    // Save index in localStorage
-    localStorage.setItem('currentIndex', JSON.stringify(currentIndex));
+      // Save index in localStorage
+     localStorage.setItem('currentIndex', JSON.stringify(currentIndex));
   
 
-    // Initialize progress bar
-    progressBar.value = 0;
-    progressLabel.value = '0%';
+      // Initialize progress bar
+      progressBar.value = 0;
+      progressLabel.value = '0%';
     }
     else{
       textFieldGoodJob.style.display ='block';
@@ -65,6 +66,7 @@ async function fetchWords() {
   } catch (error) {
     console.error('Error fetching words:', error);
   }
+  displayImageFromBytes();
 }
 
 
@@ -103,6 +105,54 @@ function move(word) {
   }, 500);
 }
 
+async function displayImageFromBytes() {
+
+  try {
+    // Отправляем запрос на сервер
+    const response = await fetch("http://localhost:8082/ai/request/image");
+
+    if (!response.ok) {
+      throw new Error(`Ошибка загрузки изображения: ${response.statusText}`);
+    }
+
+    // Получаем массив байтов как Blob
+    const blob = await response.blob();
+
+    // Генерируем URL из Blob
+    const objectUrl = URL.createObjectURL(blob);
+    
+    image.src = objectUrl;
+    const parentElement = image.parentElement; 
+    const parentWidth = parentElement.offsetWidth; // Ширина контейнера
+    const parentHeight = parentElement.offsetHeight; // Высота контейнера
+
+    image.src = objectUrl;
+
+    image.onload = () => {
+      const aspectRatio = image.naturalWidth / image.naturalHeight;
+      let newWidth, newHeight;
+
+      // Сохраняем пропорции, подстраиваем под размеры контейнера
+      if (parentWidth / aspectRatio <= parentHeight) {
+        newWidth = parentWidth;
+        newHeight = parentWidth / aspectRatio;
+      } else {
+        newHeight = parentHeight;
+        newWidth = parentHeight * aspectRatio;
+      }
+
+      image.style.width = `${newWidth}px`;
+      image.style.height = `${newHeight}px`;
+      parentElement.style.display = 'flex';
+      parentElement.style.justifyContent = 'center';
+      parentElement.style.alignItems = 'center';
+      parentElement.style.position = 'relative'; 
+    }
+  
+  } catch (error) {
+    console.error("Ошибка:", error.message);
+  }
+}
 
 
 
@@ -228,3 +278,4 @@ notKnowWord.addEventListener('click', () => {
 });
 
 fetchWords();
+

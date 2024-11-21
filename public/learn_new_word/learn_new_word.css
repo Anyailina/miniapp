@@ -95,15 +95,14 @@ progress {
   display: none;
   flex-direction: column; /* Align items vertically */
   justify-content: center;
-  position: relative;
   align-items: center;
   border-radius: 10px;
   cursor: grab;
   transition: transform 0.5s ease-out, box-shadow 0.3s ease, background-color 0.3s ease, scale 0.2s ease;
+  position: relative;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   font-size: 18px;
-
 }
 
 
@@ -121,57 +120,103 @@ progress {
   cursor: pointer; /* Меняет курсор при наведении */
 }
 
-#textNewWordField{
-  position: absolute;
-  display: flex;
-  top: 4%;
+.text-block {
+  background: transparent;
+  flex-direction: column; 
+  height: 40%;
+  display: flex; /* Включаем Flexbox */
+  padding: 10px;
+}
+
+.buttons-group{
+  height: 10%;
+}
+
+.image-block{
+  background: transparent;
   width: 100%;
-  left: 4%;
-  border: none; /* Remove border */
-  background: transparent;
-}
-#textFieldTranslation{
-  position: absolute;
-
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: transparent;
-  font-size: 16px;
-  border: none; /* Remove border */
-  height: 10%; /* Takes 90% of the container's width */
-  color: #333; /* Text color */
-  font-family: Arial, sans-serif; /* Ensures text looks clean */
-  text-align: center; /* Aligns the text to the left */
-  display: none; 
+  height: 50%; 
 }
 
-#showButton {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+#image{
+  position:relative;
   font-size: 16px;
-  background-color: #929492; /* Button background color */
-  color: #fafbfc; /* Button text color */
+  background-color: #929492; 
+  color: #fafbfc;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 70px; /* Set a fixed width for the square */
-  height: 70px; /* Set the same height for the square */
-  display: flex; /* Enable flex to center the text */
-  justify-content: center; /* Center the text horizontally */
-  align-items: center; /* Center the text vertically */
-  text-align: center;
 }
-#textFolderField{
-  position: absolute;
-  color: #857b7b;
-  top: 12%;
-  width: 100%;
-  left: 4%;
+
+#textNewWordField {
+  margin-top: 3%;
+  display: flex;
+  height: 15%; /* Takes 90% of the container's width */
+  width: 95%;
+  margin-left: 5%;
   border: none; /* Remove border */
   background: transparent;
+  align-self: flex-start; /* Закрепить элемент вверху контейнера */
+}
+
+#textFolderField{
+  width: 95%;
+  margin: 2%;
+  height: 15%;
+  border: none; /* Remove border */
+  background: transparent;
+  color: #6a6969;
+}
+
+#textField {
+  display: flex; 
+  font-size: 16px;
+  margin-left: 5%;
+  width: 95%;
+  background: transparent;
+  border: none; /* Remove border */
+  border-radius: 4px;
+  height: 25%; /* Takes 90% of the container's width */
+  color: #333; /* Text color */
+  font-family: Arial, sans-serif; /* Ensures text looks clean */
+}
+
+
+.translation {
+  height: 25%; 
+  width: 100%;
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы по вертикали */
+  justify-content: center; /* Центрируем по вертикали */
+  align-items: center; /* Центрируем по горизонтали */
+  position: relative; /* Для возможных внутренних настроек */
+}
+
+
+#showButton {
+  position: relative; /* Сброс позиции */
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  height: 70px; 
+  width: 70px;
+  background-color: #6a6969;
+  color: #fff; /* Светлый цвет текста для контраста */
+  font-family: Arial, sans-serif;
+}
+
+#textFieldTranslation {
+  font-size: 16px;
+  background: transparent;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  border: none;
+  display: none;
+  border-radius: 4px;
+  color: #181313;
+  font-family: Arial, sans-serif;
 }
 
 #textNewWordField:focus {
@@ -184,22 +229,7 @@ progress {
   border: none; /* Remove border on focus */
   outline: none; /* Optional: remove the focus outline */
 }
-#textField {
-  display: flex; 
-  position: absolute;
-  top: 17%;
-  left: 10px;
-  left: 4%;
-  font-size: 16px;
-  background: transparent;
-  border: none; /* Remove border */
-  border-radius: 4px;
-  height: 10%; /* Takes 90% of the container's width */
-  color: #333; /* Text color */
-  padding: 10px;
-  font-family: Arial, sans-serif; /* Ensures text looks clean */
 
-}
 #textField:focus {
   border: none; /* Remove border on focus */
   outline: none; /* Optional: remove the focus outline */
@@ -235,7 +265,6 @@ progress {
   white-space: normal; /* Позволяет переносить текст на несколько строк */
   display: none;
 }
-
 
 
 #know_word, #not_know_word {
